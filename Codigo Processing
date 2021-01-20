@@ -1,0 +1,149 @@
+//Jefferson Malte
+import grafica.*;
+import processing.serial.*;
+import controlP5.*;
+
+ControlP5 cp5;
+String portname = "COM10";
+Serial Port; // objeto Serial
+
+GPlot plot;
+GPointsArray myArray = new GPointsArray(0);
+GPointsArray linea = new GPointsArray(0);
+
+String dato="";
+float peso=56;
+String alto;
+int al=170;
+ 
+void setup() {
+  background(#393958);
+  size(600, 600);
+  Port = new Serial(this, portname, 9600);
+  Port.bufferUntil('\n');
+   cp5=new ControlP5(this);
+  //boton
+   
+  cp5.addButton("LINEAL")
+    .setPosition(100,100)
+    .setSize(150,50)
+    .setColorBackground(#87E375)//COLOR AZUL
+    .setColorActive(#E8F53E)
+    .setColorForeground(#E8F53E)
+    .getCaptionLabel()
+    .setFont(createFont("Arial",15))
+    .toUpperCase(false)
+    .setText("LINEAL")
+    .align(ControlP5.CENTER,ControlP5.CENTER).setPaddingX(0)
+    ;
+  
+   cp5.addButton("EXPONENCIAL")
+    .setPosition(350,100)
+    .setSize(150,50)
+    .setColorBackground(#87E375)//COLOR AZUL
+    .setColorActive(#E8F53E)
+    .setColorForeground(#E8F53E)
+    .getCaptionLabel()
+    .setFont(createFont("Arial",15))
+    .toUpperCase(false)
+    .setText("EXPONENCIAL")
+    .align(ControlP5.CENTER,ControlP5.CENTER).setPaddingX(0)
+    ;
+  
+
+}
+void draw(){
+  PFont font;
+    PFont font1;
+  font =loadFont("CopperplateGothic-Bold-48.vlw");
+  textFont(font);
+  textAlign(CENTER, CENTER);
+  textSize(40);
+  fill(#91D4D6);
+  text("PREDICCION DEL PESO\n\nDE UNA PERSONA",width/2,50);
+  font1 =loadFont("ComicSansMS-BoldItalic-48.vlw");
+  textFont(font1);
+  textAlign(CENTER, CENTER);
+  textSize(20);
+  fill(#F6FF7C);
+  text("@Copyright", width/2, height*0.96);
+ // textSize(20);
+ // fill(255);
+ //text(dato, width/2, 350);
+}
+void serialEvent (Serial Port) {
+   dato= Port.readStringUntil('\n');;
+   peso=float(dato);
+  print(dato);
+}
+public void LINEAL() {
+  background(#393958);
+   textSize(25);
+  fill(255);
+  text("El modelo Lineal es:",width/2,240);
+  text("y= 1.18x - 133.39",width/2,270);
+  text("Su peso EN Kg debe ser:"+dato, width/2, 300);
+  fill(#FA5D5D);
+  text( "REGRESION LINEAL", width/2, 350);
+   grafico();
+   stroke(0,0,255);
+     line(233,493,406,405);
+     
+}
+
+public void EXPONENCIAL() {
+  background(#393958);
+
+   textSize(25);
+  fill(255);
+  text("El modelo Exponencial es:",width/2,240);
+  text("y= (3.43)*(1.02^x)",width/2,270);
+  text("Su peso en KG debe ser: "+dato, width/2, 300);
+ fill(#FA5D5D);
+   text( "REGRESION EXPONENCIAL", width/2, 350);
+   grafico();
+  stroke(0,255,0);
+     line(233,490,319,453);
+     line(319,453,406,405);
+}
+void grafico(){
+    plot = new GPlot(this, 150, height/2+60, 300, 200);
+ 
+  myArray.add(170, 67);
+  myArray.add(180, 80);
+  myArray.add(170, 65);
+  myArray.add(178, 75);
+  myArray.add(160, 55);
+  myArray.add(163, 60);
+  myArray.add(165, 63);
+  myArray.add(170, 70);
+  myArray.add(164, 62);
+  myArray.add(176, 77);
+  myArray.add(164, 60);
+  myArray.add(170, 76);
+  myArray.add(170, 56);
+  myArray.add(168, 60);
+
+   myArray.add(al,peso);
+
+ 
+  plot.setPoints(myArray);
+  plot.setTitleText ("Relacion Talla-Peso");
+  plot.getXAxis (). setAxisLabelText ("Talla cm");
+  plot.getYAxis (). setAxisLabelText ("Peso Kg");
+  plot.beginDraw ();
+    plot.drawBackground ();
+    plot.drawBox ();
+    plot.drawXAxis ();
+    plot.drawYAxis ();
+   // plot.drawTopAxis ();
+    //plot.drawRightAxis ();
+    plot.drawTitle ();
+    plot.drawPoints ();
+    plot.endDraw ();
+    plot.setPoints(linea);
+    
+    plot.beginDraw ();
+    plot.drawPoints ();
+    plot.endDraw ();
+}
